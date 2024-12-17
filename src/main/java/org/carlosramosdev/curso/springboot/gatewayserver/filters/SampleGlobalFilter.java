@@ -40,7 +40,8 @@ public class SampleGlobalFilter implements GlobalFilter {
 
                 exchange.getResponse().getCookies().add("color", ResponseCookie
                         .from("color","blue").build());
-                exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
+                exchange.getResponse().getHeaders();
+                        //.setContentType(MediaType.TEXT_PLAIN);
         }));
     }
 }
