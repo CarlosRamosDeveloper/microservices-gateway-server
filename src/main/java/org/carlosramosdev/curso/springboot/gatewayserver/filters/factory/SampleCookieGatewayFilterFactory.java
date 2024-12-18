@@ -1,7 +1,6 @@
 package org.carlosramosdev.curso.springboot.gatewayserver.filters.factory;
-
-import org.carlosramosdev.curso.springboot.gatewayserver.filters.SampleGlobalFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.OrderedGatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
@@ -15,9 +14,13 @@ public class SampleCookieGatewayFilterFactory extends AbstractGatewayFilterFacto
 
     private final Logger logger = Logger.getLogger(String.valueOf(SampleCookieGatewayFilterFactory.class));
 
+    public SampleCookieGatewayFilterFactory() {
+        super(ConfigurationCookie.class);
+    }
+
     @Override
     public GatewayFilter apply(ConfigurationCookie config) {
-        return (exchange, chain) -> {
+        return new OrderedGatewayFilter((exchange, chain) -> {
             logger.info("Pre gateway filter factory "+config.message);
 
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
@@ -26,11 +29,7 @@ public class SampleCookieGatewayFilterFactory extends AbstractGatewayFilterFacto
                 });
                 logger.info("Post gateway filter factory "+config.message);
             }));
-        };
-    }
-
-    public SampleCookieGatewayFilterFactory() {
-        super(ConfigurationCookie.class);
+        }, 100);
     }
 
     public static class ConfigurationCookie {
